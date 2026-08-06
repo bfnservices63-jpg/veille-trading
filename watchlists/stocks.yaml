@@ -1,0 +1,30 @@
+# Grandes capitalisations liquides, Europe + US. Marché fermé le week-end (position forcée à la clôture le vendredi soir).
+# session: "EU" (~9h-17h30 Paris) ou "US" (~15h30-22h Paris)
+- { symbol: "Apple", ticker: "AAPL", session: "US" }
+- { symbol: "Microsoft", ticker: "MSFT", session: "US" }
+- { symbol: "Nvidia", ticker: "NVDA", session: "US" }
+- { symbol: "Amazon", ticker: "AMZN", session: "US" }
+- { symbol: "Alphabet", ticker: "GOOGL", session: "US" }
+- { symbol: "Meta", ticker: "META", session: "US" }
+- { symbol: "Tesla", ticker: "TSLA", session: "US" }
+- { symbol: "Broadcom", ticker: "AVGO", session: "US" }
+- { symbol: "JPMorgan", ticker: "JPM", session: "US" }
+- { symbol: "Exxon Mobil", ticker: "XOM", session: "US" }
+- { symbol: "Eli Lilly", ticker: "LLY", session: "US" }
+- { symbol: "Visa", ticker: "V", session: "US" }
+- { symbol: "Netflix", ticker: "NFLX", session: "US" }
+- { symbol: "AMD", ticker: "AMD", session: "US" }
+- { symbol: "Coca-Cola", ticker: "KO", session: "US" }
+- { symbol: "LVMH", ticker: "MC.PA", session: "EU" }
+- { symbol: "SAP", ticker: "SAP.DE", session: "EU" }
+- { symbol: "ASML", ticker: "ASML.AS", session: "EU" }
+- { symbol: "TotalEnergies", ticker: "TTE.PA", session: "EU" }
+- { symbol: "Siemens", ticker: "SIE.DE", session: "EU" }
+- { symbol: "L'Oréal", ticker: "OR.PA", session: "EU" }
+- { symbol: "Sanofi", ticker: "SAN.PA", session: "EU" }
+- { symbol: "Airbus", ticker: "AIR.PA", session: "EU" }
+- { symbol: "Allianz", ticker: "ALV.DE", session: "EU" }
+- { symbol: "Schneider Electric", ticker: "SU.PA", session: "EU" }
+- { symbol: "BNP Paribas", ticker: "BNP.PA", session: "EU" }
+- { symbol: "Volkswagen", ticker: "VOW3.DE", session: "EU" }
+- { symbol: "Shell", ticker: "SHEL.L", session: "EU" }

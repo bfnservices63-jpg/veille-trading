@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0; padding:0; background:#0d1117;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d1117;">
+<tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px; font-family: Menlo, Consolas, monospace; color:#c9d1d9;">
+
+  <tr><td style="padding:16px 12px 4px 12px;">
+    <span style="font-size:18px; font-weight:bold; color:#c9d1d9;">Positions du jour — {{ report_date }}</span><br>
+    <span style="font-size:12px; color:#8b949e;">{{ signals|length }} position(s) classée(s) par score de probabilité</span>
+  </td></tr>
+
+  {% if urgent_alert %}
+  <tr><td style="padding:0 12px 10px 12px;">
+    <table role="presentation" width="100%" cellpadding="8" cellspacing="0" style="background:#2a1114; border:1px solid #f85149; border-radius:4px;">
+      <tr><td style="font-size:12px; color:#ffb3ac;">⚠️ Alerte news : {{ urgent_alert }}</td></tr>
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <tr><td style="padding:0 12px 12px 12px;">
+    <table role="presentation" width="100%" cellpadding="8" cellspacing="0" style="background:#161b22; border:1px solid #30363d; border-left:3px solid #d29922; border-radius:4px;">
+      <tr><td style="font-size:11px; color:#8b949e;">
+        Outil de sélection algorithmique à but éducatif/d'aide à la décision, pas un conseil financier agréé
+        ni une garantie de gain. Données parfois retardées. Exécution des trades 100% manuelle, à vos risques.
+      </td></tr>
+    </table>
+  </td></tr>
+
+  {% if underfilled %}
+  <tr><td style="padding:0 12px 12px 12px; font-size:12px; color:#8b949e;">
+    Moins de {{ min_signals }} opportunités qualifiées aujourd'hui — liste plus courte que d'habitude, c'est normal.
+  </td></tr>
+  {% endif %}
+
+  {% for s in signals %}
+  <tr><td style="padding:0 12px 8px 12px;">
+    <table role="presentation" width="100%" cellpadding="10" cellspacing="0" style="background:#161b22; border:1px solid #30363d; border-radius:6px;">
+      <tr>
+        <td style="font-size:15px; font-weight:bold; color:#c9d1d9;">
+          {{ s.symbol }}
+          <span style="font-size:10px; font-weight:bold; color:#0d1117; background:{{ s.market|market_color }}; padding:1px 6px; border-radius:3px;">{{ s.market|market_label }}</span>
+          <span style="font-size:11px; font-weight:bold; color:{{ s.direction|direction_color }}; border:1px solid {{ s.direction|direction_color }}; padding:1px 6px; border-radius:3px;">{{ "ACHAT" if s.direction == "achat" else "VENTE" }}</span>
+        </td>
+        <td align="right" style="font-size:12px; color:{{ s.final_score|score_color }}; font-weight:bold;">{{ s.final_score|round|int }}/100</td>
+      </tr>
+      <tr><td colspan="2" style="font-size:10px; color:#8b949e; padding-top:2px;">{{ s.session|session_label }}</td></tr>
+      <tr><td colspan="2" style="font-size:12px; padding-top:8px;">
+        Entrée <b>{{ s.entry|price }}</b> &nbsp;|&nbsp; Stop <b>{{ s.stop|price }}</b> &nbsp;|&nbsp;
+        Obj.1 <b>{{ s.tp1|price }}</b> &nbsp;|&nbsp; Obj.2 <b>{{ s.tp2|price }}</b> &nbsp;|&nbsp;
+        R:R <b>{{ "%.2f"|format(s.risk_reward) }}</b><br>
+        Taille position <b>{{ s.position_size|size }}</b> (risque {{ "%.0f"|format(s.risk_amount_eur) }} €)
+      </td></tr>
+      <tr><td colspan="2" style="font-size:11px; color:#8b949e; padding-top:8px;">
+        Pourquoi : {{ s.rationale|join(" · ") }}
+      </td></tr>
+    </table>
+  </td></tr>
+  {% endfor %}
+
+  <tr><td style="padding:12px; font-size:11px; color:#8b949e;">
+    Tableau de bord complet (cocher/copier les niveaux, historique) :
+    <a href="{{ dashboard_url }}" style="color:#58a6ff;">{{ dashboard_url }}</a>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>

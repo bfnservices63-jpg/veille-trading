@@ -1,0 +1,10 @@
+# Indices majeurs utilisés comme proxy gratuit pour les CFD indices. Marché fermé le week-end.
+# Attention : un broker CFD réel appliquera un spread et un financement overnight différents de la valeur cash de l'indice.
+- { symbol: "S&P 500", ticker: "^GSPC", session: "US" }
+- { symbol: "Nasdaq 100", ticker: "^NDX", session: "US" }
+- { symbol: "Dow Jones", ticker: "^DJI", session: "US" }
+- { symbol: "Russell 2000", ticker: "^RUT", session: "US" }
+- { symbol: "CAC 40", ticker: "^FCHI", session: "EU" }
+- { symbol: "DAX", ticker: "^GDAXI", session: "EU" }
+- { symbol: "FTSE 100", ticker: "^FTSE", session: "EU" }
+- { symbol: "Euro Stoxx 50", ticker: "^STOXX50E", session: "EU" }

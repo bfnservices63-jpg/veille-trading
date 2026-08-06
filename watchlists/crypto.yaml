@@ -1,0 +1,18 @@
+# Paires crypto liquides suivies quotidiennement. Marché 24h/7 (jamais fermé, pas de clôture forcée le week-end).
+# binance: symbole Binance (source principale) — coingecko: identifiant CoinGecko (repli si Binance bloqué géographiquement)
+- { symbol: "BTC/USDT", binance: "BTCUSDT", coingecko: "bitcoin", session: "24h" }
+- { symbol: "ETH/USDT", binance: "ETHUSDT", coingecko: "ethereum", session: "24h" }
+- { symbol: "BNB/USDT", binance: "BNBUSDT", coingecko: "binancecoin", session: "24h" }
+- { symbol: "SOL/USDT", binance: "SOLUSDT", coingecko: "solana", session: "24h" }
+- { symbol: "XRP/USDT", binance: "XRPUSDT", coingecko: "ripple", session: "24h" }
+- { symbol: "ADA/USDT", binance: "ADAUSDT", coingecko: "cardano", session: "24h" }
+- { symbol: "DOGE/USDT", binance: "DOGEUSDT", coingecko: "dogecoin", session: "24h" }
+- { symbol: "AVAX/USDT", binance: "AVAXUSDT", coingecko: "avalanche-2", session: "24h" }
+- { symbol: "DOT/USDT", binance: "DOTUSDT", coingecko: "polkadot", session: "24h" }
+- { symbol: "LINK/USDT", binance: "LINKUSDT", coingecko: "chainlink", session: "24h" }
+- { symbol: "MATIC/USDT", binance: "MATICUSDT", coingecko: "matic-network", session: "24h" }
+- { symbol: "LTC/USDT", binance: "LTCUSDT", coingecko: "litecoin", session: "24h" }
+- { symbol: "TON/USDT", binance: "TONUSDT", coingecko: "the-open-network", session: "24h" }
+- { symbol: "TRX/USDT", binance: "TRXUSDT", coingecko: "tron", session: "24h" }
+- { symbol: "NEAR/USDT", binance: "NEARUSDT", coingecko: "near", session: "24h" }
+- { symbol: "ATOM/USDT", binance: "ATOMUSDT", coingecko: "cosmos", session: "24h" }

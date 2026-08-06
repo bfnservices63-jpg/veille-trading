@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Historique / performance</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff; }
+  body { background: var(--bg); color: var(--text); margin: 0; padding: 12px; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+  h1 { font-size: 18px; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 12px; margin-right: 12px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 14px 0; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
+  .stat-card .value { font-size: 20px; font-weight: bold; }
+  .stat-card .label { font-size: 11px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: normal; }
+  .outcome-win { color: #3fb950; }
+  .outcome-loss { color: #f85149; }
+  .outcome-pending { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Historique / performance</h1>
+<nav><a href="index.html">Aujourd'hui</a><a href="history.html">Historique / performance</a></nav>
+
+<div class="stats-grid">
+  <div class="stat-card"><div class="value">{{ stats.win_rate|pct if stats.win_rate is not none else "-" }}</div><div class="label">Taux de réussite (SL vs TP)</div></div>
+  <div class="stat-card"><div class="value">{{ "%.2f"|format(stats.avg_r_multiple) if stats.avg_r_multiple is not none else "-" }}</div><div class="label">R multiple moyen</div></div>
+  <div class="stat-card"><div class="value">{{ stats.total_resolved }}</div><div class="label">Signaux résolus</div></div>
+  <div class="stat-card"><div class="value">{{ stats.total_pending }}</div><div class="label">Signaux en cours</div></div>
+</div>
+
+<table>
+  <tr><th>Marché</th><th>Résolus</th><th>Taux de réussite</th></tr>
+  {% for market, d in stats.by_market.items() %}
+  <tr><td>{{ market|market_label }}</td><td>{{ d.total }}</td><td>{{ d.win_rate|pct if d.win_rate is not none else "-" }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2 style="font-size:14px; margin-top:20px;">Derniers signaux</h2>
+<table>
+  <tr><th>Date</th><th>Instrument</th><th>Marché</th><th>Sens</th><th>Score</th><th>Résultat</th></tr>
+  {% for e in recent_entries %}
+  <tr>
+    <td>{{ e.generated_at[:10] }}</td>
+    <td>{{ e.symbol }}</td>
+    <td>{{ e.market|market_label }}</td>
+    <td>{{ "Achat" if e.direction == "achat" else "Vente" }}</td>
+    <td>{{ e.final_score|round|int }}</td>
+    <td class="{{ 'outcome-win' if e.outcome == 'TP_HIT' else ('outcome-loss' if e.outcome == 'SL_HIT' else 'outcome-pending') }}">{{ e.outcome }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</body>
+</html>

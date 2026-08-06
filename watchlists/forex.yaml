@@ -1,0 +1,17 @@
+# Paires forex liquides suivies quotidiennement. Marché 24h/5 (fermé le week-end).
+# ticker: symbole yfinance (ex: EURUSD=X)
+- { symbol: "EUR/USD", ticker: "EURUSD=X", session: "24h" }
+- { symbol: "GBP/USD", ticker: "GBPUSD=X", session: "24h" }
+- { symbol: "USD/JPY", ticker: "JPY=X", session: "24h" }
+- { symbol: "USD/CHF", ticker: "CHF=X", session: "24h" }
+- { symbol: "AUD/USD", ticker: "AUDUSD=X", session: "24h" }
+- { symbol: "USD/CAD", ticker: "CAD=X", session: "24h" }
+- { symbol: "NZD/USD", ticker: "NZDUSD=X", session: "24h" }
+- { symbol: "EUR/GBP", ticker: "EURGBP=X", session: "24h" }
+- { symbol: "EUR/JPY", ticker: "EURJPY=X", session: "24h" }
+- { symbol: "EUR/CHF", ticker: "EURCHF=X", session: "24h" }
+- { symbol: "GBP/JPY", ticker: "GBPJPY=X", session: "24h" }
+- { symbol: "AUD/JPY", ticker: "AUDJPY=X", session: "24h" }
+- { symbol: "USD/SEK", ticker: "SEK=X", session: "24h" }
+- { symbol: "USD/NOK", ticker: "NOK=X", session: "24h" }
+- { symbol: "USD/MXN", ticker: "MXN=X", session: "24h" }

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Positions du jour — {{ report_date }}</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); margin: 0; padding: 12px;
+    font-family: "SF Mono", "Menlo", "Consolas", monospace; font-size: 14px;
+  }
+  header { margin-bottom: 14px; }
+  h1 { font-size: 18px; margin: 0 0 4px 0; }
+  .subtitle { color: var(--muted); font-size: 12px; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 12px; margin-right: 12px; }
+  .disclaimer {
+    border: 1px solid var(--border); border-left: 3px solid #d29922; background: var(--card);
+    padding: 8px 10px; font-size: 11px; color: var(--muted); margin: 10px 0 16px 0; border-radius: 4px;
+  }
+  .warning-box {
+    border: 1px solid #f85149; background: #2a1114; color: #ffb3ac;
+    padding: 8px 10px; font-size: 12px; margin: 0 0 14px 0; border-radius: 4px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 8px;
+  }
+  .card.taken { opacity: 0.45; }
+  .card-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .symbol { font-weight: bold; font-size: 15px; }
+  .badge {
+    display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px;
+    color: #0d1117; font-weight: bold; margin-left: 6px;
+  }
+  .direction { font-weight: bold; padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+  .score-bar-track { background: #21262d; border-radius: 3px; height: 6px; width: 90px; overflow: hidden; }
+  .score-bar-fill { height: 100%; }
+  .score-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 4px 10px; margin-top: 8px; font-size: 12px; }
+  .levels div span { color: var(--muted); display: block; font-size: 10px; }
+  .rationale { margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .rationale ul { margin: 4px 0 0 0; padding-left: 16px; }
+  .actions { margin-top: 8px; display: flex; gap: 8px; align-items: center; }
+  button.copy-btn {
+    background: #21262d; color: var(--text); border: 1px solid var(--border);
+    border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit;
+  }
+  button.copy-btn:hover { border-color: var(--accent); }
+  label.take-checkbox { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .session-tag { font-size: 10px; color: var(--muted); }
+  .underfilled-note { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Positions du jour — {{ report_date }}</h1>
+  <div class="subtitle">{{ signals|length }} position(s) classée(s) par score de probabilité</div>
+  <nav><a href="index.html">Aujourd'hui</a><a href="history.html">Historique / performance</a></nav>
+</header>
+
+{% if urgent_alert %}
+<div class="warning-box">⚠️ Alerte news : {{ urgent_alert }}</div>
+{% endif %}
+
+<div class="disclaimer">
+  Outil de sélection algorithmique à but éducatif/d'aide à la décision, pas un conseil financier agréé
+  ni une garantie de gain. Données parfois retardées (voir README). Exécution des trades 100% manuelle,
+  à vos risques. Voir <a href="https://github.com" style="color:var(--accent)">DISCLAIMER.md</a> du dépôt pour le détail.
+</div>
+
+{% if underfilled %}
+<div class="underfilled-note">Moins de {{ min_signals }} opportunités qualifiées aujourd'hui — liste plus courte que d'habitude, c'est normal, la qualité prime sur le nombre.</div>
+{% endif %}
+
+{% for s in signals %}
+<div class="card" id="card-{{ s.id }}">
+  <div class="card-top">
+    <div>
+      <span class="symbol">{{ s.symbol }}</span>
+      <span class="badge" style="background: {{ s.market|market_color }}">{{ s.market|market_label }}</span>
+      <span class="direction" style="background: {{ s.direction|direction_color }}20; color: {{ s.direction|direction_color }}; border: 1px solid {{ s.direction|direction_color }}">
+        {{ "ACHAT" if s.direction == "achat" else "VENTE" }}
+      </span>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <div class="score-bar-track"><div class="score-bar-fill" style="width: {{ s.final_score }}%; background: {{ s.final_score|score_color }}"></div></div>
+      <span class="score-label">{{ s.final_score|round|int }}/100</span>
+    </div>
+  </div>
+  <div class="session-tag">{{ s.session|session_label }}</div>
+
+  <div class="levels">
+    <div><span>Entrée</span>{{ s.entry|price }}</div>
+    <div><span>Stop</span>{{ s.stop|price }}</div>
+    <div><span>Objectif 1</span>{{ s.tp1|price }}</div>
+    <div><span>Objectif 2</span>{{ s.tp2|price }}</div>
+    <div><span>R:R</span>{{ "%.2f"|format(s.risk_reward) }}</div>
+    <div><span>Taille position</span>{{ s.position_size|size }}</div>
+    <div><span>Risque</span>{{ "%.0f"|format(s.risk_amount_eur) }} €</div>
+  </div>
+
+  <div class="rationale">
+    Pourquoi ce trade :
+    <ul>
+      {% for r in s.rationale %}<li>{{ r }}</li>{% endfor %}
+    </ul>
+  </div>
+
+  <div class="actions">
+    <button class="copy-btn" data-entry="{{ s.entry|price }}" data-stop="{{ s.stop|price }}" data-tp="{{ s.tp1|price }}" onclick="copyLevels(this)">Copier les niveaux</button>
+    <label class="take-checkbox"><input type="checkbox" class="take-cb" data-id="{{ s.id }}" onchange="toggleTaken(this)"> Prise</label>
+    <label class="take-checkbox"><input type="checkbox" class="skip-cb" data-id="{{ s.id }}" onchange="toggleTaken(this)"> Ignorée</label>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+function storageKey(id) { return "robot-trading:" + id; }
+
+function copyLevels(btn) {
+  const text = "Entrée: " + btn.dataset.entry + " | Stop: " + btn.dataset.stop + " | Objectif: " + btn.dataset.tp;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "Copié !";
+    setTimeout(() => { btn.textContent = original; }, 1200);
+  });
+}
+
+function toggleTaken(cb) {
+  const id = cb.dataset.id;
+  const card = document.getElementById("card-" + id);
+  const takeCb = card.querySelector(".take-cb");
+  const skipCb = card.querySelector(".skip-cb");
+  if (cb.classList.contains("take-cb") && cb.checked) skipCb.checked = false;
+  if (cb.classList.contains("skip-cb") && cb.checked) takeCb.checked = false;
+  const state = takeCb.checked ? "taken" : (skipCb.checked ? "skipped" : "none");
+  localStorage.setItem(storageKey(id), state);
+  card.classList.toggle("taken", state !== "none");
+}
+
+document.querySelectorAll(".card").forEach(card => {
+  const id = card.id.replace("card-", "");
+  const state = localStorage.getItem(storageKey(id));
+  if (state === "taken") { card.querySelector(".take-cb").checked = true; card.classList.add("taken"); }
+  if (state === "skipped") { card.querySelector(".skip-cb").checked = true; card.classList.add("taken"); }
+});
+</script>
+</body>
+</html>

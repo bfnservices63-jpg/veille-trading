@@ -1,0 +1,63 @@
+name: Rapport quotidien
+
+on:
+  schedule:
+    # Deux horaires UTC pour viser ~20h Paris malgré le changement heure été/hiver.
+    # Le script vérifie lui-même l'heure locale Paris et ne fait rien si ce n'est pas la bonne heure
+    # (voir DAILY_REPORT_HOUR_PARIS dans src/config.py).
+    - cron: "0 18 * * *"
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+    inputs:
+      skip_time_check:
+        description: "Ignorer la vérification d'heure locale (déclenchement manuel de test)"
+        type: boolean
+        default: true
+      dry_run:
+        description: "Mode dry-run (ne journalise pas, n'envoie pas d'email)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - run: pip install -r requirements.txt
+
+      - name: Exécuter le pipeline
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.skip_time_check }}" = "true" ]; then
+            ARGS="$ARGS --skip-time-check"
+          fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python scripts/run_pipeline.py $ARGS
+
+      - name: Committer l'historique et le dashboard
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add history/ docs/
+          if ! git diff --cached --quiet; then
+            git commit -m "Rapport quotidien $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          else
+            echo "Rien à committer (probablement hors fenêtre horaire cible)."
+          fi
